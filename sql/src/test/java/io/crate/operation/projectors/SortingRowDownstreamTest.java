@@ -164,37 +164,6 @@ public class SortingRowDownstreamTest extends CrateUnitTest {
     }
 
     @Test
-    public void testSortMergeThreaded() throws Exception {
-        CollectingRowReceiver finalReceiver = new CollectingRowReceiver();
-        SortingRowMerger projector = new SortingRowMerger(
-                finalReceiver,
-                new int[]{0},
-                new boolean[]{false},
-                new Boolean[]{null}
-        );
-
-        Upstream upstream1 = new Upstream(projector, new Object[]{1}, new Object[]{3}, new Object[]{4});
-        Upstream upstream2 = new Upstream(projector, new Object[]{2}, new Object[]{3}, new Object[]{5});
-        Upstream upstream3 = new Upstream(projector, new Object[]{1}, new Object[]{3}, new Object[]{3}, new Object[]{4});
-        Upstream upstream4 = new Upstream(projector, new Object[]{1}, new Object[]{3}, new Object[]{4});
-        Upstream upstream5 = new Upstream(projector);
-
-
-        upstream1.start();
-        upstream2.start();
-        upstream3.start();
-        upstream4.start();
-        upstream5.start();
-
-        Bucket result = finalReceiver.result();
-
-        assertThat(result.size(), is(13));
-        Object[] column = TestingHelpers.getColumn(result, 0);
-        assertThat(column, Matchers.<Object>arrayContaining(1, 1, 1, 2, 3, 3, 3, 3, 3, 4, 4, 4, 5));
-
-    }
-
-    @Test
     @Repeat(iterations = 10)
     @TestLogging("io.crate.operation.projectors.BlockingSortingQueuedRowDownstream:TRACE")
     public void testBlockingSortingQueuedRowDownstreamThreaded() throws Exception {

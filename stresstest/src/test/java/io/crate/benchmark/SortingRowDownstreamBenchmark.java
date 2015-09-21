@@ -164,20 +164,6 @@ public class SortingRowDownstreamBenchmark extends BenchmarkBase {
         }
     }
 
-    @BenchmarkOptions(benchmarkRounds = BENCHMARK_ROUNDS, warmupRounds = WARMUP_ROUNDS)
-    @Test
-    public void testMergeProjectorPerformance() throws Exception {
-        CollectingRowReceiver downstream = new NonMaterializingCollectingRowReceiver();
-        SortingRowMerger rowMerger = new SortingRowMerger(
-                downstream,
-                new int[]{0},
-                new boolean[]{false},
-                new Boolean[]{null}
-        );
-        runPerformanceTest(rowMerger);
-        downstream.result();
-    }
-
     @TestLogging("io.crate.operation.projectors.BlockingSortingQueuedRowDownstream:TRACE")
     @BenchmarkOptions(benchmarkRounds = BENCHMARK_ROUNDS, warmupRounds = WARMUP_ROUNDS)
     @Test
